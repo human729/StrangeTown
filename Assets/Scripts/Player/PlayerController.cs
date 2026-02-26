@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Скорости движения")]
+    [Header("MoveSpeed")]
     [SerializeField] private float walkSpeed = 2f;
     [SerializeField] private float runSpeed = 4.5f;
     [SerializeField] private float crouchSpeed = 1.2f;
@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float deceleration = 15f;
     [SerializeField] private float backwardSpeedMultiplier = 0.7f;
 
-    [Header("Приседание")]
+    [Header("Crouch")]
     [SerializeField] private float crouchHeight = 1f;
     [SerializeField] private float standingHeight = 1.8f;
     [SerializeField] private float crouchTransitionSpeed = 10f;
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float exhaustedSpeedMultiplier = 0.6f;
     [SerializeField] private float exhaustedThreshold = 20f;
 
-    [Header("quickTurn")]
+    [Header("QuickTurn")]
     [SerializeField] private float quickTurnTime = 0.3f;
 
     [Header("Physics")]
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             HandleMovement();
-            HandleRotation();
+            //HandleRotation();
         }
 
         HandleVerticalSnap();
@@ -202,19 +202,19 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector3(newVelocity.x, rb.linearVelocity.y, newVelocity.z);
     }
 
-    private void HandleRotation()
-    {
-        if (moveDirection.magnitude < 0.1f) return;
+    //private void HandleRotation()
+    //{
+    //    if (moveDirection.magnitude < 0.1f) return;
 
-        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-        Quaternion newRotation = Quaternion.Slerp(
-            transform.rotation,
-            targetRotation,
-            rotationSpeed * Time.fixedDeltaTime
-        );
+    //    Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+    //    Quaternion newRotation = Quaternion.Slerp(
+    //        transform.rotation,
+    //        targetRotation,
+    //        rotationSpeed * Time.fixedDeltaTime
+    //    );
 
-        rb.MoveRotation(newRotation);
-    }
+    //    rb.MoveRotation(newRotation);
+    //}
 
     private void StartQuickTurn()
     {

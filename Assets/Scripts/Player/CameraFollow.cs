@@ -72,6 +72,7 @@ public class CameraFollow : MonoBehaviour
 
         Quaternion rotation = Quaternion.Euler(currentRotationX, currentRotationY, 0);
         Vector3 desiredPosition = target.position + rotation * currentOffset;
+        target.rotation = new Quaternion(rotation.x, 0, rotation.z, 0);
 
         desiredPosition = HandleCameraCollision(desiredPosition, target.position);
 
