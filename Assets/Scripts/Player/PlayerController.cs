@@ -1,33 +1,28 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerControllerCinemachine : MonoBehaviour
 {
-    [Header("MoveSpeed")]
+    [Header("Movement")]
     [SerializeField] private float walkSpeed = 2f;
     [SerializeField] private float runSpeed = 4.5f;
     [SerializeField] private float crouchSpeed = 1.2f;
-    [SerializeField] private float rotationSpeed = 720f;
     [SerializeField] private float acceleration = 12f;
     [SerializeField] private float deceleration = 15f;
     [SerializeField] private float backwardSpeedMultiplier = 0.7f;
+
+    [Header("Rotation")]
+    [SerializeField] private float rotationSpeed = 720f;
 
     [Header("Crouch")]
     [SerializeField] private float crouchHeight = 1f;
     [SerializeField] private float standingHeight = 1.8f;
     [SerializeField] private float crouchTransitionSpeed = 10f;
-    [SerializeField] private Vector3 crouchCenter = new Vector3(0, 0.5f, 0);
-    [SerializeField] private Vector3 standingCenter = new Vector3(0, 0.9f, 0);
 
     [Header("Stamina")]
     [SerializeField] private float maxStamina = 100f;
     [SerializeField] private float staminaDrainRate = 30f;
     [SerializeField] private float staminaRegenRate = 20f;
     [SerializeField] private float staminaRegenDelay = 1.5f;
-    [SerializeField] private float exhaustedSpeedMultiplier = 0.6f;
-    [SerializeField] private float exhaustedThreshold = 20f;
-
-    [Header("QuickTurn")]
-    [SerializeField] private float quickTurnTime = 0.3f;
 
     [Header("Physics")]
     [SerializeField] private float groundDrag = 8f;
@@ -36,35 +31,26 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
     private CapsuleCollider capsuleCollider;
-    private Camera mainCamera;
+    private CameraFollow cameraController;
 
     private Vector2 inputDirection;
     private Vector3 moveDirection;
-    private Vector3 cameraRelativeMove;
     private float currentSpeed;
     private bool isGrounded;
-
     private bool isRunning;
     private bool isCrouching;
-    private bool isQuickTurning;
-    private bool isExhausted;
     private bool wantsToCrouch;
 
     private float currentStamina;
     private float staminaRegenTimer;
 
-    private float quickTurnTimer;
-    private Quaternion quickTurnStartRot;
-    private Quaternion quickTurnTargetRot;
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         capsuleCollider = GetComponent<CapsuleCollider>();
-        mainCamera = Camera.main;
+        cameraController = Camera.main.GetComponent<CameraFollow>();
 
         capsuleCollider.height = standingHeight;
-        capsuleCollider.center = standingCenter;
         currentStamina = maxStamina;
     }
 
@@ -74,23 +60,14 @@ public class PlayerController : MonoBehaviour
         HandleGroundCheck();
         HandleCrouch();
         HandleStamina();
-        HandleQuickTurnInput();
 
         UpdateMovementDirection();
     }
 
     void FixedUpdate()
     {
-        if (isQuickTurning)
-        {
-            HandleQuickTurn();
-        }
-        else
-        {
-            HandleMovement();
-            //HandleRotation();
-        }
-
+        HandleMovement();
+        HandleRotation();
         HandleVerticalSnap();
     }
 
@@ -99,206 +76,85 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        inputDirection = new Vector2(horizontal, vertical);
+        inputDirection = new Vector2(horizontal, vertical).normalized;
 
-        if (inputDirection.magnitude > 1f)
-        {
-            inputDirection.Normalize();
-        }
-
-        bool runButton = Input.GetKey(KeyCode.LeftShift) || Input.GetButton("Fire3");
-        isRunning = runButton && !isCrouching && !isExhausted && inputDirection.magnitude > 0.1f;
+        bool runButton = Input.GetKey(KeyCode.LeftShift);
+        isRunning = runButton && !isCrouching && inputDirection.magnitude > 0.1f && currentStamina > 0;
 
         wantsToCrouch = Input.GetKey(KeyCode.C);
-
-        if (Input.GetKeyDown(KeyCode.Space) && !isQuickTurning && isGrounded && !isCrouching)
-        {
-            StartQuickTurn();
-        }
     }
 
     private void UpdateMovementDirection()
     {
-        if (mainCamera == null) return;
+        if (cameraController == null) return;
 
-        Vector3 cameraForward = mainCamera.transform.forward;
-        Vector3 cameraRight = mainCamera.transform.right;
+        Vector3 cameraForward = cameraController.GetCameraForward();
+        Vector3 cameraRight = cameraController.GetCameraRight();
 
-        cameraForward.y = 0;
-        cameraRight.y = 0;
-        cameraForward.Normalize();
-        cameraRight.Normalize();
-
-        cameraRelativeMove = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
-
-        if (inputDirection.magnitude > 0.1f)
-        {
-            moveDirection = cameraRelativeMove;
-        }
-        else
-        {
-            moveDirection = Vector3.zero;
-        }
+        moveDirection = (cameraForward * inputDirection.y + cameraRight * inputDirection.x).normalized;
     }
 
     private void HandleMovement()
     {
+        float targetSpeed = walkSpeed;
+
         if (isCrouching)
-        {
-            currentSpeed = crouchSpeed;
-        }
+            targetSpeed = crouchSpeed;
         else if (isRunning)
-        {
-            currentSpeed = runSpeed;
+            targetSpeed = runSpeed;
 
-            if (inputDirection.magnitude > 0.1f)
-            {
-                currentStamina -= staminaDrainRate * Time.fixedDeltaTime;
-                currentStamina = Mathf.Max(0, currentStamina);
-                staminaRegenTimer = 0f;
+        float speedMultiplier = inputDirection.y < -0.1f ? backwardSpeedMultiplier : 1f;
 
-                if (currentStamina <= 0)
-                {
-                    isExhausted = true;
-                    isRunning = false;
-                }
-            }
-        }
-        else if (isExhausted)
-        {
-            currentSpeed = walkSpeed * exhaustedSpeedMultiplier;
-        }
-        else
-        {
-            currentSpeed = walkSpeed;
-        }
+        Vector3 currentVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        Vector3 targetVelocity = moveDirection * targetSpeed * speedMultiplier;
 
-        float speedMultiplier = 1f;
-        if (inputDirection.y < -0.1f)
-        {
-            speedMultiplier = backwardSpeedMultiplier;
-        }
-
-        Vector3 currentVelocity;
-        Vector3 newVelocity;
-
-        if (moveDirection.magnitude < 0.1f)
-        {
-            currentVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-            newVelocity = Vector3.Lerp(currentVelocity, Vector3.zero, deceleration * Time.fixedDeltaTime);
-            rb.linearVelocity = new Vector3(newVelocity.x, rb.linearVelocity.y, newVelocity.z);
-            return;
-        }
-
-        Vector3 targetVelocity = moveDirection * currentSpeed * speedMultiplier;
-
-        currentVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-        newVelocity = Vector3.Lerp(
-            currentVelocity,
-            targetVelocity,
-            acceleration * Time.fixedDeltaTime
-        );
+        float accelerationRate = moveDirection.magnitude > 0.1f ? acceleration : deceleration;
+        Vector3 newVelocity = Vector3.Lerp(currentVelocity, targetVelocity, accelerationRate * Time.fixedDeltaTime);
 
         rb.linearVelocity = new Vector3(newVelocity.x, rb.linearVelocity.y, newVelocity.z);
-    }
 
-    //private void HandleRotation()
-    //{
-    //    if (moveDirection.magnitude < 0.1f) return;
-
-    //    Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-    //    Quaternion newRotation = Quaternion.Slerp(
-    //        transform.rotation,
-    //        targetRotation,
-    //        rotationSpeed * Time.fixedDeltaTime
-    //    );
-
-    //    rb.MoveRotation(newRotation);
-    //}
-
-    private void StartQuickTurn()
-    {
-        isQuickTurning = true;
-        quickTurnTimer = 0f;
-        quickTurnStartRot = transform.rotation;
-        quickTurnTargetRot = Quaternion.Euler(0, transform.eulerAngles.y + 180f, 0);
-
-        rb.linearVelocity = Vector3.zero;
-    }
-
-    private void HandleQuickTurn()
-    {
-        quickTurnTimer += Time.fixedDeltaTime;
-        float t = Mathf.Clamp01(quickTurnTimer / quickTurnTime);
-
-        float easedT = 1f - Mathf.Pow(1f - t, 3);
-
-        transform.rotation = Quaternion.Slerp(quickTurnStartRot, quickTurnTargetRot, easedT);
-
-        if (t > 0.7f)
+        // Расход Stamina
+        if (isRunning && moveDirection.magnitude > 0.1f)
         {
-            Vector3 forwardMove = transform.forward * walkSpeed * 0.3f * Time.fixedDeltaTime;
-            rb.MovePosition(rb.position + forwardMove);
-        }
-
-        if (t >= 1f)
-        {
-            isQuickTurning = false;
+            currentStamina -= staminaDrainRate * Time.deltaTime;
+            currentStamina = Mathf.Max(0, currentStamina);
+            staminaRegenTimer = 0f;
         }
     }
 
-    private void HandleQuickTurnInput()
+    private void HandleRotation()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            HandleQuickTurn();
-        }
+        if (moveDirection.magnitude < 0.1f) return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
     private void HandleCrouch()
     {
-        if (wantsToCrouch && !isCrouching && !isRunning)
+        if (wantsToCrouch && !isCrouching)
         {
-            if (CanCrouch())
-            {
-                isCrouching = true;
-            }
+            isCrouching = true;
         }
-        else if (!wantsToCrouch && isCrouching)
+        else if (!wantsToCrouch && isCrouching && CanStandUp())
         {
-            if (CanStandUp())
-            {
-                isCrouching = false;
-            }
+            isCrouching = false;
         }
 
         float targetHeight = isCrouching ? crouchHeight : standingHeight;
-        Vector3 targetCenter = isCrouching ? crouchCenter : standingCenter;
-
         capsuleCollider.height = Mathf.Lerp(capsuleCollider.height, targetHeight, crouchTransitionSpeed * Time.deltaTime);
-        capsuleCollider.center = Vector3.Lerp(capsuleCollider.center, targetCenter, crouchTransitionSpeed * Time.deltaTime);
-    }
-
-    private bool CanCrouch()
-    {
-        return true;
     }
 
     private bool CanStandUp()
     {
-        Vector3 rayStart = transform.position + Vector3.up * (crouchHeight + 0.1f);
-        float checkDistance = standingHeight - crouchHeight - 0.2f;
-
-        return !Physics.Raycast(rayStart, Vector3.up, checkDistance, groundMask);
+        RaycastHit hit;
+        return !Physics.SphereCast(transform.position + Vector3.up * crouchHeight,
+            0.3f, Vector3.up, out hit, standingHeight - crouchHeight, groundMask);
     }
 
     private void HandleStamina()
     {
-        if (isRunning)
-        {
-            staminaRegenTimer = 0f;
-        }
-        else
+        if (!isRunning)
         {
             staminaRegenTimer += Time.deltaTime;
 
@@ -306,24 +162,14 @@ public class PlayerController : MonoBehaviour
             {
                 currentStamina += staminaRegenRate * Time.deltaTime;
                 currentStamina = Mathf.Min(currentStamina, maxStamina);
-
-                if (currentStamina > exhaustedThreshold)
-                {
-                    isExhausted = false;
-                }
             }
-        }
-
-        if (currentStamina <= 0)
-        {
-            isExhausted = true;
         }
     }
 
     private void HandleGroundCheck()
     {
-        Vector3 rayStart = transform.position + Vector3.up * 0.1f;
-        isGrounded = Physics.Raycast(rayStart, Vector3.down, groundCheckDistance + 0.1f, groundMask);
+        isGrounded = Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down,
+            groundCheckDistance + 0.1f, groundMask);
 
         rb.linearDamping = isGrounded ? groundDrag : 0f;
     }
@@ -336,11 +182,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public float GetStaminaNormalized() => currentStamina / maxStamina;
     public bool IsRunning() => isRunning;
     public bool IsCrouching() => isCrouching;
-    public bool IsExhausted() => isExhausted;
-    public bool IsMoving() => inputDirection.magnitude > 0.1f;
-    public Vector3 GetMoveDirection() => moveDirection;
-    public Vector2 GetInputDirection() => inputDirection;
+    public float GetStaminaNormalized() => currentStamina / maxStamina;
 }

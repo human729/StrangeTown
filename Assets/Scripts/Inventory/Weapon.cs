@@ -16,14 +16,16 @@ public class Weapon : MonoBehaviour
     public string WeaponType;
     public AmmoTypes AmmoType;
 
-    void Start()
+    public Weapon(int weaponId, string weaponName, int maxAmmo, float attackRate, float damage, string weaponType, AmmoTypes ammoType)
     {
-        
-    }
-
-    void Update()
-    {
-        
+        WeaponId = weaponId;
+        WeaponName = weaponName;
+        MaxAmmo = maxAmmo;
+        CurrentAmmo = MaxAmmo;
+        AttackRate = attackRate;
+        Damage = damage;
+        WeaponType = weaponType;
+        AmmoType = ammoType;
     }
 
 }
