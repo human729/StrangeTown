@@ -3205,7 +3205,7 @@ MonoBehaviour:
     m_Bits: 128
   UsableObjects:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!1 &1942847163
 GameObject:
   m_ObjectHideFlags: 0
