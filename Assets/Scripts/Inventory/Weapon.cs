@@ -13,10 +13,11 @@ public class Weapon : MonoBehaviour
     public int MaxAmmo;
     public float AttackRate;
     public float Damage;
+    public float AttackRange;
     public string WeaponType;
     public AmmoTypes AmmoType;
 
-    public Weapon(int weaponId, string weaponName, int maxAmmo, float attackRate, float damage, string weaponType, AmmoTypes ammoType)
+    public Weapon(int weaponId, string weaponName, int maxAmmo, float attackRate, float damage, float attackRange, string weaponType, AmmoTypes ammoType)
     {
         WeaponId = weaponId;
         WeaponName = weaponName;
@@ -24,6 +25,7 @@ public class Weapon : MonoBehaviour
         CurrentAmmo = MaxAmmo;
         AttackRate = attackRate;
         Damage = damage;
+        AttackRange = attackRange;
         WeaponType = weaponType;
         AmmoType = ammoType;
     }

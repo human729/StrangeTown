@@ -1,6 +1,7 @@
 using UnityEngine;
+using UnityEngine.Splines;
 
-public class EnemyBehavior : MonoBehaviour
+public class EnemyBehavior : MonoBehaviour, IDamageable
 {
     [Header("Attack Data")]
     public float AttackRange;
@@ -12,27 +13,33 @@ public class EnemyBehavior : MonoBehaviour
     public float MoveSpeed;
     public float Health;
     public float MaxHealth;
-    private bool IsAlive;
+    private bool isAlive;
 
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     void Attack(GameObject player)
     {
         
     }
 
-    void Die()
+    public void Die()
     {
-        IsAlive = false;
+        isAlive = false;
         Destroy(gameObject);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        Health -= damage;
+
+        if (Health <= 0)
+        {
+            isAlive = false;
+            Die();
+        }
+    }
+
+    bool IDamageable.IsAlive()
+    {
+        return isAlive;
     }
 }

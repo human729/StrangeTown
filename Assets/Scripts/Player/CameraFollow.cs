@@ -33,7 +33,7 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private bool enableShoulderSwitch = true;
     [SerializeField] private KeyCode switchShoulderKey = KeyCode.E;
     [SerializeField] private float shoulderOffset = 0.5f;
-    private int shoulderSide = 1; // 1 = right, -1 = left
+    private int shoulderSide = 1;
 
     [Header("Camera Effects")]
     [SerializeField] private bool enableCameraInertia = true;
@@ -84,13 +84,11 @@ public class CameraFollow : MonoBehaviour
         UpdateFOV();
         UpdateCrosshair();
 
-        // Всегда поворачиваем персонажа за камерой
         RotateCharacter();
     }
 
     private void HandleInput()
     {
-        // Прицеливание
         if (Input.GetMouseButtonDown(1))
         {
             isAiming = true;
@@ -137,7 +135,6 @@ public class CameraFollow : MonoBehaviour
 
     private void CalculateDesiredPosition(Vector3 targetOffset)
     {
-        // Всегда используем вращение камеры для расчета позиции
         Quaternion rotation = Quaternion.Euler(currentRotationX, currentRotationY, 0);
         desiredPosition = target.position + rotation * targetOffset;
     }
@@ -182,11 +179,9 @@ public class CameraFollow : MonoBehaviour
         transform.position = smoothedPosition;
         lastDesiredPosition = desiredPosition;
 
-        // Поворот камеры для взгляда на цель
         if (isAiming)
         {
-            // При прицеливании смотрим немного выше для лучшего обзора
-            Vector3 lookTarget = target.position + Vector3.up * 1.5f + target.forward * 2f;
+            Vector3 lookTarget = target.position + target.up * 1.5f + target.forward * 2f;
             transform.LookAt(lookTarget);
         }
         else
@@ -211,14 +206,12 @@ public class CameraFollow : MonoBehaviour
 
     private void RotateCharacter()
     {
-        // Поворачиваем персонажа вместе с камерой (только по горизонтали)
         Vector3 characterRotation = target.eulerAngles;
         characterRotation.y = currentRotationY;
         target.rotation = Quaternion.Slerp(target.rotation,
             Quaternion.Euler(characterRotation), rotationSpeed * Time.deltaTime);
     }
 
-    // Публичные методы
     public bool IsAiming() => isAiming;
     public void SetTarget(Transform newTarget) => target = newTarget;
 
@@ -234,16 +227,5 @@ public class CameraFollow : MonoBehaviour
         Vector3 right = transform.right;
         right.y = 0;
         return right.normalized;
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        if (target == null) return;
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(target.position, collisionRadius);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(target.position, desiredPosition);
     }
 }

@@ -17,9 +17,12 @@ public class PlayerData : MonoBehaviour, IDamageable
 
     [Header("Weapon")]
     private Weapon CurrentWeapon;
+    [SerializeField] GameObject WeaponInHands;
     [SerializeField] private Inventory Inventory;
 
     private bool canShoot = false;
+    public Camera Camera;
+    public LayerMask ShootableLayer;
 
     void Start()
     {
@@ -73,6 +76,28 @@ public class PlayerData : MonoBehaviour, IDamageable
     {
         CurrentWeapon.CurrentAmmo--;
         AmmoData.text = $"{CurrentWeapon.CurrentAmmo} / {CurrentWeapon.MaxAmmo}";
+
+        Ray ray = Camera.ViewportPointToRay(new Vector3(.5f, .5f, 0f));
+        RaycastHit hit;
+        Vector3 targetPoint;
+
+        targetPoint = ray.origin + ray.direction * CurrentWeapon.AttackRange;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, ShootableLayer))
+        {
+            if (Physics.Raycast(WeaponInHands.transform.position, (hit.collider.gameObject.transform.position - WeaponInHands.transform.position).normalized, CurrentWeapon.AttackRange, ShootableLayer))
+            {
+                Debug.Log("You really shot it");
+                EnemyBehavior hitEnemy = hit.collider.gameObject.GetComponent<EnemyBehavior>();
+                if (hitEnemy != null)
+                {
+                    hitEnemy.TakeDamage(CurrentWeapon.Damage);
+                }
+            }
+        }
+
+        //Debug.DrawRay(ray.origin, ray.direction, Color.green);
+        //Debug.DrawRay(WeaponInHands.transform.position, (hit.collider.gameObject.transform.position - WeaponInHands.transform.position).normalized, Color.red);
+
         if (CurrentWeapon.CurrentAmmo == 0)
         {
             canShoot = false;
