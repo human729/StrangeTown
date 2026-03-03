@@ -12,7 +12,7 @@ public class PlayerData : MonoBehaviour, IDamageable
 
     [Header("Player data")]
     public float Health;
-    public float NaxHealth;
+    public float MaxHealth;
     private bool isAlive;
 
     [Header("Weapon")]

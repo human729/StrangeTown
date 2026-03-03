@@ -8,6 +8,8 @@ TagManager:
   - Enemy
   - Item
   - Pickable
+  - Door
+  - InventoryUIMenu
   layers:
   - Default
   - TransparentFX
