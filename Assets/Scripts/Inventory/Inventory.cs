@@ -5,7 +5,7 @@ public class Inventory : MonoBehaviour
 {
     public Dictionary<AmmoTypes, int> WeaponAmmo = new();
     public List<Weapon> Weapons;
-    public List<Item> Items;
+    public List<GameObject> Items;
 
     void Awake()
     {

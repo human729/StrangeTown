@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class InventoryInteract : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private GameObject CombineMenu;
+    [SerializeField] private GameObject Inventory;
+
+    public void OpenInventory()
     {
-        
+        CombineMenu.SetActive(false);
+        Inventory.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OpenCombineMenu()
     {
-        
-    }
+        Inventory.SetActive(false);
+        CombineMenu.SetActive(true);
+    }    
 }

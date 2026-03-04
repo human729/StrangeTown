@@ -31,13 +31,14 @@ public class ItemSlotInteract : MonoBehaviour
 
     public void UseItem()
     {
-        if (item.Name == "Medicine Kit")
+        if (item.Name == "MedicineKit")
         {
             UseMedicine();
         }
 
         if (item.Name == "Key")
         {
+            door = GameObject.FindGameObjectWithTag("Player").GetComponent<PickupItem>().foundDoor;
             UseKey();
             inventoryMenu = GameObject.FindGameObjectWithTag("InventoryUIMenu");
             inventoryMenu.SetActive(false);
@@ -54,7 +55,7 @@ public class ItemSlotInteract : MonoBehaviour
             {
                 print("Success");
                 door.GetComponent<Rigidbody>().freezeRotation = false;
-                door.tag = "None";
+                door.tag = "Untagged";
                 door = null;
             }
         }
@@ -62,6 +63,7 @@ public class ItemSlotInteract : MonoBehaviour
 
     private void UseMedicine()
     {
+        playerData = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerData>();
         playerData.Health = playerData.MaxHealth;
     }
 }

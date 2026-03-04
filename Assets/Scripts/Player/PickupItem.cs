@@ -15,18 +15,25 @@ public class PickupItem : MonoBehaviour
     private GameObject newItemSlot;
 
     [Header("Inventory")]
-    [SerializeField] private Inventory Inventory;
     [SerializeField] private GameObject InventoryUI;
+    [SerializeField] private Inventory Inventory;
     [SerializeField] private GameObject ItemSlot;
     [SerializeField] private GridLayoutGroup ItemsContainer;
-    
-    private void UpdateInventory()
-    {
-        
-    }
+    [SerializeField] private PlayerController playerController;
 
     void Update()
     {
+        if (InventoryUI.activeInHierarchy)
+        {
+            playerController.enabled = false;
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+        }
+        else
+        {
+            playerController.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             ToggleInventory();
@@ -36,7 +43,7 @@ public class PickupItem : MonoBehaviour
         {
             TryPickupItem();
         }
-
+        
         if (Input.GetKeyDown(KeyCode.E))
         {
             TryOpenDoor();
@@ -46,15 +53,6 @@ public class PickupItem : MonoBehaviour
     public void ToggleInventory()
     {
         InventoryUI.SetActive(!InventoryUI.activeInHierarchy);
-
-        if (InventoryUI.activeInHierarchy)
-        {
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
-        } else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
     }
 
     private void TryOpenDoor()
@@ -65,7 +63,7 @@ public class PickupItem : MonoBehaviour
             if (hit.collider.CompareTag("Door"))
             {
                 foundDoor = hit.collider.gameObject;
-                newItemSlot.GetComponent<ItemSlotInteract>().door = foundDoor;
+                //newItemSlot.GetComponent<ItemSlotInteract>().door = foundDoor;
                 ToggleInventory();
             }
         }
@@ -83,11 +81,13 @@ public class PickupItem : MonoBehaviour
                 if (ItemsContainer.transform.childCount == 104)
                     return;
 
-                Inventory.Items.Add(ItemToAdd);
                 newItemSlot = Instantiate(ItemSlot);
                 newItemSlot.transform.SetParent(ItemsContainer.transform, false);
                 newItemSlot.GetComponent<RawImage>().texture = ItemToAdd.Sprite;
                 newItemSlot.GetComponent<ItemSlotInteract>().item = ItemToAdd;
+
+                Inventory.Items.Add(newItemSlot);
+
                 hit.collider.gameObject.SetActive(false);
 
                 print($"added {ItemToAdd.Name}");

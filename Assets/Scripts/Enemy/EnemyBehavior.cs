@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -16,9 +17,10 @@ public class EnemyBehavior : MonoBehaviour, IDamageable
     private bool isAlive;
 
 
-    void Attack(GameObject player)
+    void Attack(PlayerData player)
     {
-        
+        player.Health -= 20;
+        StartCoroutine(WaitForAttack());
     }
 
     public void Die()
@@ -41,5 +43,11 @@ public class EnemyBehavior : MonoBehaviour, IDamageable
     bool IDamageable.IsAlive()
     {
         return isAlive;
+    }
+
+    IEnumerator WaitForAttack()
+    {
+        yield return new WaitForSeconds(.7f);
+
     }
 }

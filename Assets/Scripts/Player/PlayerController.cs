@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerControllerCinemachine : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 2f;
