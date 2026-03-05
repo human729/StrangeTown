@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class ItemSlotInteract : MonoBehaviour
 {
-    [SerializeField] private PlayerData playerData;
     [Header("Buttons")]
     [SerializeField] private GameObject UseButton;
     [SerializeField] private GameObject DropButton;
@@ -22,10 +21,13 @@ public class ItemSlotInteract : MonoBehaviour
     {
         GameObject ItemGameObject = item.gameObject;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        print(ItemGameObject.name);
+      
         ItemGameObject.SetActive(true);
         ItemGameObject.transform.position = player.transform.position + Vector3.down;
-        
+        Inventory Inventory = player.GetComponent<Inventory>();
+        Inventory.Items.Remove(gameObject);
+        print($"Dropped {ItemGameObject.name}");
+
         Destroy(gameObject);
     }
 
@@ -63,7 +65,7 @@ public class ItemSlotInteract : MonoBehaviour
 
     private void UseMedicine()
     {
-        playerData = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerData>();
+        PlayerData playerData = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerData>();
         playerData.Health = playerData.MaxHealth;
     }
 }

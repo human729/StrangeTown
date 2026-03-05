@@ -1,12 +1,12 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CombineItems : MonoBehaviour
 {
-    private int buttonId;
     [SerializeField] private Inventory Inventory;
     [SerializeField] private GameObject ItemSlot;
     public List<Item> Components;
@@ -17,6 +17,10 @@ public class CombineItems : MonoBehaviour
     {
         int FoundComponents = 0;
         Item ResultItem = Result;
+        List<GameObject> ComponentsToDestroy = new();
+
+        if (!Inventory.Items.Any())
+            return;
 
         foreach (var component in Components)
         {
@@ -24,10 +28,7 @@ public class CombineItems : MonoBehaviour
             {
                 if (item.GetComponent<ItemSlotInteract>().item.Name == component.Name)
                 {
-                    int itemId = Inventory.Items.IndexOf(item);
-                    Destroy(item);
-                    print(item.name);
-                    Inventory.Items.Remove(item);
+                    ComponentsToDestroy.Add(item);
                     FoundComponents++;
                     break;
                 }
@@ -36,6 +37,11 @@ public class CombineItems : MonoBehaviour
 
         if (FoundComponents == 2)
         {
+            foreach (var component in ComponentsToDestroy)
+            {
+                Destroy(component.gameObject);
+                Inventory.Items.Remove(component.gameObject);
+            }
             GameObject newItemSlot = Instantiate(ItemSlot);
             newItemSlot.GetComponent<ItemSlotInteract>().item = ResultItem;
             newItemSlot.GetComponent<RawImage>().texture = ResultItem.Sprite;
