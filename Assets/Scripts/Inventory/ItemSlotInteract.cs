@@ -13,8 +13,22 @@ public class ItemSlotInteract : MonoBehaviour
 
     public void OnSlotClicked()
     {
+        DisableButtons();
         UseButton.SetActive(true);
         DropButton.SetActive(true);
+    }
+
+    public void DisableButtons()
+    {
+        GameObject ItemsContainer = GameObject.Find("ItemsContainer");
+
+        foreach (Image Item in ItemsContainer.GetComponentsInChildren<Image>())
+        {
+            foreach (Button button in Item.GetComponentsInChildren<Button>())
+            {
+                button.gameObject.SetActive(false);
+            }
+        }
     }
 
     public void DropItem()

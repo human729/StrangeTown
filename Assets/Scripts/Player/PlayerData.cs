@@ -126,7 +126,7 @@ public class PlayerData : MonoBehaviour, IDamageable
         if (CurrentWeapon.WeaponId < 1)
         {
             CurrentWeapon = Inventory.Weapons[++CurrentWeapon.WeaponId];
-            WeaponData.text = CurrentWeapon.WeaponName;
+            WeaponData.text = CurrentWeapon.WeaponName; 
             AmmoData.text = $"{CurrentWeapon.CurrentAmmo} / {CurrentWeapon.MaxAmmo}";
             InventoryAmmo.text = $"{Inventory.WeaponAmmo[CurrentWeapon.AmmoType]}";
             print($"{Inventory.Weapons.Count}, {CurrentWeapon.WeaponName}");

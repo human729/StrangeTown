@@ -67,7 +67,6 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         HandleMovement();
-        HandleRotation();
         HandleVerticalSnap();
     }
 
@@ -113,21 +112,12 @@ public class PlayerController : MonoBehaviour
 
         rb.linearVelocity = new Vector3(newVelocity.x, rb.linearVelocity.y, newVelocity.z);
 
-        // Расход Stamina
         if (isRunning && moveDirection.magnitude > 0.1f)
         {
             currentStamina -= staminaDrainRate * Time.deltaTime;
             currentStamina = Mathf.Max(0, currentStamina);
             staminaRegenTimer = 0f;
         }
-    }
-
-    private void HandleRotation()
-    {
-        if (moveDirection.magnitude < 0.1f) return;
-
-        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-        rb.rotation = Quaternion.RotateTowards(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
     private void HandleCrouch()
