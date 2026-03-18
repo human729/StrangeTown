@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &6432237004333277060
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 13.053739
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 17.989626
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 9.181607
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 111.63
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.502
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 259.29526
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 890bcedec515d5f43b3da41ad2cccdb8, type: 2}
+    - target: {fileID: 919132149155446097, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_Name
+      value: alcoholBottle
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      propertyPath: m_TagString
+      value: Pickable
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6680034058987179636}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 886038232799429077}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8563911054101753275}
+  m_SourcePrefab: {fileID: 100100000, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+--- !u!1 &6161641894425486037 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b130dc92cbaee784da69b84ab818f488, type: 3}
+  m_PrefabInstance: {fileID: 6432237004333277060}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6680034058987179636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6161641894425486037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59faff31bdbc5e34c9530934b6c1717c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Item
+  ItemId: 2
+  Name: Alcohol
+  Sprite: {fileID: 2800000, guid: 68c3a97a0a921f3499c0cea913e06873, type: 3}
+  Prefab: {fileID: 6161641894425486037}
+--- !u!54 &886038232799429077
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6161641894425486037}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 122
+  m_CollisionDetection: 0
+--- !u!65 &8563911054101753275
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6161641894425486037}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.020900324, y: 0.02155354, z: 0.07028995}
+  m_Center: {x: -0.0000000027939677, y: 0.0000047595236, z: 0.005573554}

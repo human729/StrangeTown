@@ -33,14 +33,14 @@ public class ItemSlotInteract : MonoBehaviour
 
     public void DropItem()
     {
-        GameObject ItemGameObject = item.gameObject;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-      
-        ItemGameObject.SetActive(true);
-        ItemGameObject.transform.position = player.transform.position + Vector3.down;
+
+        //ItemGameObject.SetActive(true);
+        //ItemGameObject.transform.position = player.transform.position + Vector3.down;
+        GameObject SpawnedItem = Instantiate(item.Prefab, player.transform.position + player.transform.forward, Quaternion.Euler(-90f, 0f, 0f));
+        SpawnedItem.SetActive(true);
         Inventory Inventory = player.GetComponent<Inventory>();
         Inventory.Items.Remove(gameObject);
-        print($"Dropped {ItemGameObject.name}");
 
         Destroy(gameObject);
     }

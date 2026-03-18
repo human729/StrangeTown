@@ -78,7 +78,7 @@ public class PickupItem : MonoBehaviour
             {
                 ItemToAdd = hit.collider.gameObject.GetComponent<Item>();
 
-                if (ItemsContainer.transform.childCount == 104)
+                if (ItemsContainer.transform.childCount == 20)
                     return;
 
                 newItemSlot = Instantiate(ItemSlot);
@@ -89,6 +89,7 @@ public class PickupItem : MonoBehaviour
                 Inventory.Items.Add(newItemSlot);
 
                 hit.collider.gameObject.SetActive(false);
+                //Destroy(hit.collider.gameObject);
 
                 print($"added {ItemToAdd.Name}");
             }

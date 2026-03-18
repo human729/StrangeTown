@@ -10,6 +10,7 @@ TagManager:
   - Pickable
   - Door
   - InventoryUIMenu
+  - SavingMachine
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Enemy
   - PickableItem
   - UsableObjects
-  - 
+  - Saving
   - 
   - 
   - 
